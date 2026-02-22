@@ -5,10 +5,16 @@ import { createServer } from 'http';
 import connectDB from './configs/db.js';
 import { clerkMiddleware } from '@clerk/express';
 import clerkWebhooks from './controllers/clerkWebhooks.js';
+import UserRouter from './routes/UserRoutes.js';
+import HotelRouter from './routes/hotelRoutes.js';
+import connectCloudinary from './configs/cloudinary.js';
+import roomRouter from './routes/roomRoutes.js';
+
 // import { Server } from 'socket.io';
 // import { router } from './routes.js';
 
 connectDB();
+connectCloudinary();
 const app = express();
 app.use(cors());// Enable CORS for all routes
 
@@ -21,6 +27,10 @@ app.use("/api/clerk",clerkWebhooks)
 app.get('/', (req, res) => {
     res.send('Api is running fine');
 });
+app.use('/api/user', UserRouter);
+app.use('/api/hotel', HotelRouter);
+app.use('/api/room', roomRouter);
+
 
 const PORT= process.env.PORT || 3000;
 app.listen(PORT, () => {
