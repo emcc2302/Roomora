@@ -9,8 +9,8 @@ const Testimonial = () => {
         <Title title="What Our Customers Say" subTitle="Discover why discerning travelers trust us for their exclusive and luxurious experiences around the wrold" />
 
           <div className="flex flex-wrap items-center gap-6 mt-20 justify-center">
-                {testimonials.map((testimonial) => (
-                    <div key={testimonial.id} className="bg-white p-6 rounded-xl shadow ">
+                {testimonials.map((testimonial,index) => (
+                    <div key={testimonial.id || index} className="bg-white p-6 rounded-xl shadow ">
                         <div className="flex items-center gap-3">
                             <img className="w-12 h-12 rounded-full" src={testimonial.image} alt={testimonial.name} />
                             <div>

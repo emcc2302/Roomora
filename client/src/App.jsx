@@ -11,15 +11,18 @@ import Layout from './pages/hotelOwner/Layout.jsx'
 import Dashboard from './pages/hotelOwner/Dashboard.jsx'
 import ListRoom from './pages/hotelOwner/ListRoom.jsx'
 import AddRoom from './pages/hotelOwner/AddRoom.jsx'
+import {Toaster} from 'react-hot-toast';
+import { useAppContext } from './context/AppContext.jsx'
 
 const App = () => {
 
 const isOwnerPath =useLocation().pathname.includes('owner'); // it will remove navbar from owner path
-
+const {showHotelReg} = useAppContext(); // it will show hotel registration form only on add-room path
   return (
     <div>
+      <Toaster />
       {!isOwnerPath && <Navbar/>}
-     {false && <HotelReg/>}
+     {showHotelReg && <HotelReg/>}
     <div className='min-h-[70vh]'>
       <Routes>
         <Route path='/' element ={<Home/>}/>
