@@ -75,21 +75,25 @@ const AllRooms = () => {
   const matchesRoomType = (room) => {
     return (
       selectedFilters.roomTypes.length === 0 ||
-      selectedFilters.roomTypes.includes(room.type)
+      selectedFilters.roomTypes.includes(room.roomType)
     );
   };
 
   
-  const matchesPriceRange = (room) => {
-    if (selectedFilters.priceRanges.length === 0) return true;
+const matchesPriceRange = (room) => {
+  if (selectedFilters.priceRanges.length === 0) return true;
 
-    return selectedFilters.priceRanges.some((range) => {
-      if (range === "$300+") return room.pricePerNight >= 300;
+  return selectedFilters.priceRanges.some((range) => {
 
-      const [min, max] = range.replace("$", "").split("-").map(Number);
-      return room.pricePerNight >= min && room.pricePerNight <= max;
-    });
-  };
+    if (range === "$300+") {
+      return room.pricePerNight >= 300;
+    }
+
+    const [min, max] = range.replace(/\$/g, "").split("-").map(Number);
+
+    return room.pricePerNight >= min && room.pricePerNight <= max;
+  });
+};
 
   const sortRooms = (roomsList) => {
     if (selectedSort === "Price: Low to High") {
