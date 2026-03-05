@@ -15,12 +15,14 @@ const clerkWebhookSecret =async (req, res) => {
 
         //Getting Data from the request body
         const { data, type } = req.body;
-        const userData={
-            _id: data.id,
-            email: data.email_addresses[0].email_address,
-            username: data.first_name + " " + data.last_name,
-            image:data.image_url,
-        }
+        const userData = {
+    _id: data.id,
+    email: data.email_addresses[0].email_address,
+    username: data.first_name + " " + data.last_name,
+    image: data.image_url,
+    role: "user",
+    recentSearchedCities: []
+};
 
         //Switch case to handle different types of events
         switch (type) {

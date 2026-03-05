@@ -23,14 +23,19 @@ app.use(express.json());
 app.use(clerkMiddleware());
 
 //API to listen to the webhook events from Clerk
-app.use("/api/clerk",clerkWebhooks)
+// app.use("/api/clerk",clerkWebhooks)
+app.post(
+  "/api/clerk",
+  express.raw({ type: "application/json" }),
+  clerkWebhooks
+);
 
 app.get('/', (req, res) => {
     res.send('Api is running fine');
 });
 app.use('/api/user', UserRouter);
-app.use('/api/hotel', HotelRouter);
-app.use('/api/room', roomRouter);
+app.use('/api/hotels', HotelRouter);
+app.use('/api/rooms', roomRouter);
 app.use('/api/booking', bookingRouter);
 
 

@@ -3,7 +3,7 @@ import User from "../models/User.js";
 
 export const registerHotel = async (req, res) => {
   try {
-    const { name, city, address, contact } = req.body;
+    const {name, contact, address, city} = req.body
     const owner = req.user._id; // The user object is attached to the request by the protect middleware
 
     const hotel = await Hotel.findOne({ owner });
@@ -18,11 +18,11 @@ export const registerHotel = async (req, res) => {
 
     // Create new hotel
     await Hotel.create({
-      name,
-      city,
-      address,
+       name,
       contact,
-      owner,
+      address,
+      city,
+      owner: req.auth.userId
     });
 
     // Update user role to hotelOwner

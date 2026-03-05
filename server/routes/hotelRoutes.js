@@ -10,3 +10,4 @@ HotelRouter.post('/',protect,registerHotel);
 
 
 export default HotelRouter;
+ 
