@@ -1,6 +1,7 @@
 import Booking from "../models/Booking.js";
 import Room from "../models/Room.js";
 import Hotel from "../models/Hotel.js";
+import transporter from "../configs/nodemailer.js";
 
 // check availability helper
 const checkAvailability = async (checkInDate, checkOutDate, roomId) => {
@@ -56,7 +57,7 @@ if (!isAvailable) {
   });
 }
 
-const roomData = await Room.findById(room);
+const roomData = await Room.findById(room).populate("hotel");
 
 const timeDiff =
   Math.abs(new Date(checkOutDate).getTime() - new Date(checkInDate).getTime());
@@ -70,12 +71,43 @@ const totalPrice =
 const booking = await Booking.create({
   user,
   room,
-  hotel: roomData.hotel,
+  hotel: roomData.hotel._id,
   checkInDate,
   checkOutDate,
   totalPrice,
   guests: +guests
 });
+
+// Send booking confirmation email to the user
+const mailOptions = {
+  from: process.env.SENDER_EMAIL,
+  to: req.user.email,
+  subject: "Booking Confirmation",
+  html: `
+    <p>Dear ${req.user.username},</p>
+    <p>Your booking has been created successfully.</p>
+    <p><strong>Booking Details:</strong></p>
+    <ul>
+    <li><strong>Booking ID:</strong> ${booking._id}</li>
+    <li><strong>Hotel Name:</strong> ${roomData.hotel.name}</li>
+    <li><strong>Location:</strong> ${roomData.hotel.address}</li>
+      <li><strong>Check-In:</strong> ${new Date(booking.checkInDate).toLocaleDateString()}</li>
+      <li><strong>Check-Out:</strong> ${new Date(booking.checkOutDate).toLocaleDateString()}</li>
+      <li><strong>Guests:</strong> ${booking.guests}</li>
+      <li><strong>Total Price:</strong> ${process.env.CURRENCY || '$'}${booking.totalPrice.toFixed(2)}</li>
+    </ul>
+    <p>Thank you for choosing our service!</p>
+  `
+};
+
+// await transporter.sendMail(mailOptions);
+
+try {
+  const info = await transporter.sendMail(mailOptions);
+  console.log("MAIL SENT:", info.response);
+} catch (err) {
+  console.log("MAIL ERROR:", err);
+}
 
 res.json({
   success:true,
