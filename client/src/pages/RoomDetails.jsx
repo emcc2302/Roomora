@@ -57,17 +57,21 @@ const onSubmitHandler = async (e) => {
       return checkAvailability();
     }
     else{
-      const { data } = await axios.post(`/api/bookings/book`, {
-        room: id,
-        checkIn: checkInDate,
-        checkOut: checkOutDate,
-        guests: guests,
-        paymentMethod:"pay At Hotel"
-      }, {
-        headers: {  
-          Authorization: `Bearer ${await getToken()}`,
+      const { data } = await axios.post(
+        `/api/booking/book`,
+        {
+          room: id,
+          checkInDate: checkInDate,
+          checkOutDate: checkOutDate,
+          guests: guests,
+          paymentMethod: "Pay At Hotel",
         },
-        });
+        {
+          headers: {
+            Authorization: `Bearer ${await getToken()}`,
+          },
+        },
+      );
         if (data.success) {
           toast.success(data.message);
           navigate('/my-bookings');
