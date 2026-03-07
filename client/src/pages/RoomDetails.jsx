@@ -82,7 +82,7 @@ const onSubmitHandler = async (e) => {
         },
       );
         if (data.success) {
-          toast.success(data.message);
+          toast.success(data.message || "Room booked successfully");
           navigate('/my-bookings');
           scrollTo(0, 0);
         }
