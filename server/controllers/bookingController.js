@@ -46,7 +46,14 @@ try {
 
 const { room, checkInDate, checkOutDate, guests } = req.body;
 
-const user = req.user._id;
+const user = req.user?._id;
+
+if (!user) {
+  return res.status(401).json({
+    success: false,
+    message: "Unauthorized",
+  });
+}
 
 const isAvailable = await checkAvailability(checkInDate, checkOutDate, room);
 

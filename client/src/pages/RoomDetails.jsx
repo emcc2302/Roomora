@@ -17,35 +17,44 @@ const RoomDetails = () => {
   const [ isAvailable, setIsAvailable ] = useState(false);
 
 // Function to check availability of the room
-const checkAvailability = async (e) => {
+const checkAvailability = async () => {
   try {
-    // check if check in date is greater than check out date
+
     if (new Date(checkInDate) >= new Date(checkOutDate)) {
       toast.error("Check-Out date must be greater than Check-In date");
       return;
     }
 
-    const { data } = await axios.post("/api/booking/check-availability", {
-      params: {
+    const { data } = await axios.post(
+      "/api/booking/check-availability",
+      {
         room: id,
-        checkIn: checkInDate,
-        checkOut: checkOutDate,
+        checkInDate,
+        checkOutDate,
       },
-    });
+      {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+        },
+      }
+    );
 
     if (data.success) {
-      if (data.isAvailable) {
-        setIsAvailable(true);
-        toast.success("Room is available for the selected dates");
-      } else {
-        setIsAvailable(false);
-        toast.error("Room is not available for the selected dates");
-      }
+
+      setIsAvailable(data.isAvailable);
+
+      toast[data.isAvailable ? "success" : "error"](
+        data.isAvailable
+          ? "Room is available for selected dates"
+          : "Room not available"
+      );
+
     } else {
       toast.error(data.message);
     }
+
   } catch (error) {
-    toast.error(error.message || "Error checking room availability");
+    toast.error(error.message || "Error checking availability");
   }
 };
 
@@ -101,7 +110,7 @@ const onSubmitHandler = async (e) => {
         {/* Room Details */}
         <div className="flex flex-col md:flex-row items-start md:items-center gap-2">
           <h1 className="text-3xl md:text-4xl font-playfair">
-            {room.hotel.name}
+            {room?.hotel?.name}
             <span className="font-inter text-sm">({room.roomType})</span>
           </h1>
           <p className="text-xs font-inter py-1.5 px-3 text-white bg-orange-500 rounded-full">
@@ -118,14 +127,14 @@ const onSubmitHandler = async (e) => {
         {/* Room Address */}
         <div>
           <img src={assets.locationIcon} alt="location-icon" />
-          <span>{room.hotel.address} </span>
+         <span>{room?.hotel?.address}</span>
         </div>
 
         {/* Room Images */}
         <div className="flex flex-col lg:flex-row gap-4 mt-6">
           <div className="lg:w-1/2 w-full">
             <img
-              src={mainImage}
+              src={mainImage || room?.images?.[0]}
               alt="room-main-image"
               className="w-full rounded-xl shadow-lg object-cover"
             />
@@ -153,7 +162,7 @@ const onSubmitHandler = async (e) => {
             </h1>
 
             <div className="flex flex-wrap item-center gap-2 px-3 py-2 rounded-lg bg-gray-100 mt-4">
-              {room.amenities.map((item, index) => (
+              {room?.amenities?.map((item, index) => (
                 <div
                   key={index}
                   className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100"
@@ -258,12 +267,12 @@ const onSubmitHandler = async (e) => {
         <div className="flex flex-col items-start gap-4">
           <div className="flex gap-4">
             <img
-              src={room.hotel.owner.image}
+              src={room?.hotel?.owner?.image}
               alt="Host"
               className="h-14 w-14 md:h-18 md:w-18 rounded-full"
             />
             <div>
-              <p className="text-lg md:text-xl">Hosted by {room.hotel.name}</p>
+              <p className="text-lg md:text-xl">Hosted by {room?.hotel?.name}</p>
               <div className="flex items-center mt-1">
                 <StarRating />
                 <p className="ml-2">200+ reviews</p>

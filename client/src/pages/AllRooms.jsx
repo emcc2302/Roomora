@@ -53,31 +53,26 @@ const AllRooms = () => {
     "Newest Listings",
   ];
 
-  
-  const handleFilterChange = (checked, type, value) => {
-    setSelectedFilters((prev) => {
-      const updated = { ...prev };
-
-      if (checked) {
-        updated[type] = [...updated[type], value];
-      } else {
-        updated[type] = updated[type].filter((item) => item !== value);
-      }
-
-      return updated;
-    });
-  };
+const handleFilterChange = (checked, type, value) => {
+  setSelectedFilters((prev) => ({
+    ...prev,
+    [type]: checked
+      ? [...prev[type], value]
+      : prev[type].filter((item) => item !== value),
+  }));
+};
 
   const handleSortChange = (option) => {
     setSelectedSort(option);
   };
 
-  const matchesRoomType = (room) => {
-    return (
-      selectedFilters.roomTypes.length === 0 ||
-      selectedFilters.roomTypes.includes(room.roomType)
-    );
-  };
+ const matchesRoomType = (room) => {
+  if (selectedFilters.roomTypes.length === 0) return true;
+
+  return selectedFilters.roomTypes.some((type) =>
+    room.roomType?.toLowerCase().includes(type.toLowerCase())
+  );
+};
 
   
 const matchesPriceRange = (room) => {
