@@ -18,7 +18,6 @@ export const stripeWebhook = async (req, res) => {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  // ✅ CORRECT EVENT
   if (event.type === "checkout.session.completed") {
     const session = event.data.object;
 
@@ -29,6 +28,7 @@ export const stripeWebhook = async (req, res) => {
     await Booking.findByIdAndUpdate(bookingId, {
       isPaid: true,
       paymentMethod: "Stripe",
+      paidAt: new Date(), 
     });
   } else {
     console.log(`Unhandled event type ${event.type}`);
