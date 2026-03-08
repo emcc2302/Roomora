@@ -1,5 +1,5 @@
 import express from "express";
-import { checkRoomAvailabilityAPI } from "../controllers/bookingController.js";
+import { checkRoomAvailabilityAPI, stripePayment } from "../controllers/bookingController.js";
 import { createBooking } from "../controllers/bookingController.js";
 import { getUserBookings, getHotelBookings } from "../controllers/bookingController.js";
 import { protect } from "../middleware/authMiddleware.js";
@@ -12,7 +12,7 @@ bookingRouter.post('/book', protect, createBooking);
 bookingRouter.get('/user', protect, getUserBookings);
 bookingRouter.get('/owner-bookings', protect, getHotelBookings);
 
-
+bookingRouter.post('/stripe-payment', protect, stripePayment);
 
 
 

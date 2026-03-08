@@ -13,6 +13,7 @@ import ListRoom from './pages/hotelOwner/ListRoom.jsx'
 import AddRoom from './pages/hotelOwner/AddRoom.jsx'
 import {Toaster} from 'react-hot-toast';
 import { useAppContext } from './context/AppContext.jsx'
+import Loader from './components/Loader.jsx'
 
 const App = () => {
 
@@ -29,6 +30,7 @@ const {showHotelReg} = useAppContext(); // it will show hotel registration form 
          <Route path='/rooms' element ={<AllRooms/>}/>
          <Route path='/rooms/:id' element ={<RoomDetails/>}/>
          <Route path='/my-bookings' element ={<MyBookings/>}/>
+         <Route path='/loader/:nextUrl' element ={<Loader/>}/>
 
          <Route path='/owner' element ={<Layout/>}>
          <Route index element ={<Dashboard/>}/>
