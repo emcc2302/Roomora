@@ -207,14 +207,14 @@ try{
     name: `Booking for ${roomData.hotel.name}`,
 
   },
-  unit_amount:totalPrice * 100
+  unit_amount: Math.round(Number(booking.totalPrice) * 100),
     },
    
      quantity:1,
   }]
   // Create a Stripe Checkout session
   const session = await stripeInstance.checkout.sessions.create({
-    // payment_method_types: ['card'],
+    payment_method_types: ['card'],
     line_items,
     mode: 'payment',
     success_url: `${origin}/loader/my-bookings`,
@@ -225,8 +225,9 @@ try{
 
   });
   res.json({ success:true, url:session.url });
-}catch(error){
-  res.json({ success:false, message:"Payment failed" });
+}catch (error) {
+  console.log("STRIPE ERROR 👉", error);   // ✅ MUST
+  res.json({ success:false, message:error.message });
 }
 
 }
